@@ -12,9 +12,8 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173", // Replace with your frontend URL
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"], 
+    origin: "http://localhost:5173", 
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, 
   })
 );
@@ -29,7 +28,7 @@ mongoose
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
 // Routes
-app.use("/api", authRoutes);
+app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT ;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
