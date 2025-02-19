@@ -19,12 +19,11 @@ function Login({ login }) {
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message);
+      localStorage.setItem('token', data.token);
+      navigate(`/user/${data._id}`);
 
-      localStorage.setItem("token", data.token);
-      login(data.user);
-      navigate("/dashboard"); 
     } catch (err) {
+      data.message;
     }
   };
 

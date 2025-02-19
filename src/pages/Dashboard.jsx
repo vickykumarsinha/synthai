@@ -1,9 +1,35 @@
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 function Dashboard() {
+  const { id } = useParams(); // Get user ID from URL
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`http://localhost:5000/api/users/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await response.json();
+        setUser(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUser();
+  }, [id]);
+
+  if (!user) return <p>Loading...</p>;
+
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
-      <h2 className="text-2xl font-bold text-center mb-6">Research Paper Editor</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">
+        Welcome, {user.name}!
+      </h2>
       <Tabs defaultValue="title">
         <TabsList className="flex justify-center gap-4">
           <TabsTrigger value="title">Title & Abstract</TabsTrigger>
