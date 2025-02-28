@@ -20,7 +20,7 @@ function Navbar() {
           }
         }
       }
-      setActiveSection(currentSection);
+      // setActiveSection(currentSection);
     };
 
     window.addEventListener("scroll", handleScroll);

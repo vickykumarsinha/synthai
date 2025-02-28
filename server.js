@@ -3,10 +3,11 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import authRoutes from "./src/routes/auth.js";
-
-dotenv.config();
+import userRoutes from "./src/routes/userRoutes.js";
+import paperRoutes from "./src/routes/PaperRoutes.js";
 
 const app = express();
+dotenv.config();
 
 // Middleware
 app.use(express.json());
@@ -29,6 +30,7 @@ mongoose
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 const PORT = process.env.PORT ;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

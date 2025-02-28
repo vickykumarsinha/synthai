@@ -1,5 +1,4 @@
-// models/User.js
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -10,16 +9,22 @@ const UserSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true,  // Ensures no duplicate emails
+      unique: true,
     },
     password: {
       type: String,
       required: true,
     },
+    papers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "ResearchPaper",
+        default: [],
+      },
+    ],
   },
-  { timestamps: true } // This will automatically add createdAt and updatedAt fields
+  { timestamps: true }
 );
 
-const User = mongoose.model('User', UserSchema);
-
+const User = mongoose.model("User", UserSchema);
 export default User;
