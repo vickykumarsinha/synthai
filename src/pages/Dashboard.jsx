@@ -67,14 +67,10 @@ function Dashboard() {
     link.click();
   };
 
-  // Filter papers based on search query
-  const filteredPapers = papers
-    ? papers.filter(
-        (paper) =>
-          paper.title &&
-          paper.title.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : [];
+  // Search feature
+  const allPapers = papers.filter((paper) =>
+    paper?.title?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="max-w-6xl mt-20 mx-auto p-6 bg-white shadow-lg rounded-lg relative w-full">
@@ -83,16 +79,15 @@ function Dashboard() {
       </h2>
 
       <Link
-        to="/new-paper"
+        to='new-paper'
         className="fixed bottom-20 right-10 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition"
       >
         ➕ New Paper
       </Link>
 
-      {/* Search Input */}
       <input
         type="text"
-        placeholder="Search papers..."
+        placeholder="Search Papers..."
         className="w-full p-2 border rounded mb-4"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
@@ -112,22 +107,22 @@ function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {filteredPapers.map((paper) => (
+                {allPapers.map((paper) => (
                   <tr key={paper._id} className="border-b">
                     <td className="p-2 border">{paper.title}</td>
                     <td className="p-2 border">{new Date(paper.lastEdited).toLocaleDateString()}</td>
                     <td className="p-2 border">{paper.status}</td>
                     <td className="p-2 border flex gap-4 items-center">
-                      <Link to={`/edit-paper/${paper._id}`} className="text-blue-500">
+                      <Link to={`/edit-paper/${paper._id}`} className="text-blue-500 font-semibold">
                         ✏ Edit
                       </Link>
-                      <button onClick={() => handleCopy(paper.title)} className="text-gray-500">
+                      <button onClick={() => handleCopy(paper.title)} className="text-gray-500 font-semibold">
                         📋 Copy
                       </button>
-                      <button onClick={() => handleDownload(paper)} className="text-green-500">
+                      <button onClick={() => handleDownload(paper)} className="text-green-500 font-semibold">
                         ⬇ Download
                       </button>
-                      <button onClick={() => handleDelete(paper._id)} className="text-red-500">
+                      <button onClick={() => handleDelete(paper._id)} className="text-red-500 font-semibold">
                         ❌ Delete
                       </button>
                     </td>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Login({ login }) {
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,11 +19,19 @@ function Login({ login }) {
       });
 
       const data = await response.json();
-      localStorage.setItem('token', data.token);
-      navigate(`/user/${data._id}`);
 
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      // Store both token and user data
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user)); // Store user object
+      console.log(JSON.stringify(data.user));
+
+      navigate(`/user/${data.user._id}`); // Navigate to user page
     } catch (err) {
-      data.message;
+      setError(err.message);
     }
   };
 

@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Register from "./pages/register";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CreateNewPaper from "./pages/CreateNew";
 function App() {
   const [user, setUser] = useState(null);
 
@@ -17,7 +18,7 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gray-50 ">
         <Navbar user={user} logout={logout} />
         
         <div className="w-full flex flex-col flex-grow py-15">
@@ -29,6 +30,7 @@ function App() {
             </Route>
             <Route element={<ProtectedRoute />}>
               <Route path="/user/:id" element={<Dashboard />} />
+              <Route path="/user/:id/new-paper" element={<CreateNewPaper />} />
             </Route>
             
           </Routes>

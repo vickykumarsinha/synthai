@@ -12,13 +12,22 @@ const ResearchPaperSchema = new mongoose.Schema(
     introduction: {
       type: String,
     },
+    literature: {
+      type: String,
+    },
     methodology: {
       type: String,
     },
     results: {
       type: String,
     },
-    references: {
+    conclusion: {
+      type: String,
+    },
+    futurework: {
+      type: String,
+    },
+    citation: {
       type: String,
     },
     status: {

@@ -34,21 +34,18 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     
     const user = await User.findOne({ email });
+
+    
     if (user && (await bcrypt.compare(password, user.password))) {
+        
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
         res.json({
-            _id: user.id,
-            name: user.name,
-            email: user.email,
-            token: generateToken(user.id),
-            profile: `/user/${user.id}`,
+            token,
+            user: { _id: user._id, name: user.name, email: user.email }, // ✅ Make sure "user" is sent
         });
     } else {
         res.status(401).json({ message: 'Invalid email or password' });
     }
-};
-
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
 export { registerUser, loginUser };
