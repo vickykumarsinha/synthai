@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173", 
+    origin:  ["http://localhost:5173", "https://synthai-lac.vercel.app"], 
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, 
   })
