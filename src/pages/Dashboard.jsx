@@ -38,7 +38,7 @@ function Dashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch(`http://localhost:5000/api/papers/${paperId}`, {
+      const response = await fetch(`http://localhost:5000/api/users/${id}/delete/${paperId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -113,7 +113,7 @@ function Dashboard() {
                     <td className="p-2 border">{new Date(paper.lastEdited).toLocaleDateString()}</td>
                     <td className="p-2 border">{paper.status}</td>
                     <td className="p-2 border flex gap-4 items-center">
-                      <Link to={`/edit-paper/${paper._id}`} className="text-blue-500 font-semibold">
+                      <Link to={`/user/${id}/edit/${paper._id}`} className="text-blue-500 font-semibold">
                         ✏ Edit
                       </Link>
                       <button onClick={() => handleCopy(paper.title)} className="text-gray-500 font-semibold">

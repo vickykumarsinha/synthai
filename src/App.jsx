@@ -8,6 +8,8 @@ import Register from "./pages/register";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CreateNewPaper from "./pages/CreateNew";
+import Profile from "./pages/Profile";
+import EditPaper from "./pages/EditPaper";
 function App() {
   const [user, setUser] = useState(null);
 
@@ -31,6 +33,8 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/user/:id" element={<Dashboard />} />
               <Route path="/user/:id/new-paper" element={<CreateNewPaper />} />
+              <Route path="/user/:id/profile" element={<Profile />} />
+              <Route path="/user/:id/edit/:paperId" element={<EditPaper />} />
             </Route>
             
           </Routes>

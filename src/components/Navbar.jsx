@@ -38,14 +38,14 @@ function Navbar() {
         {isLoggedIn ? (
           <>
             {/* Profile Icon */}
-            <button
-              onClick={() => navigate(`/profile/${userId}`)}
-              className="text-gray-700 hover:text-gray-900 text-2xl"
-            >
-              <FaUserCircle />
-            </button>
             <button onClick={handleLogout} className="bg-red-500 px-4 py-2 rounded hover:bg-red-700">
               Logout
+            </button>
+            <button
+              onClick={() => navigate(`/user/${userId}/profile`)}
+              className="text-white text-4xl px-5 align-middle "
+            >
+              <FaUserCircle />
             </button>
           </>
         ) : (
