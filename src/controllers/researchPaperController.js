@@ -33,7 +33,20 @@ export const addResearchPaper = async (req, res) => {
 
 // EDIT PAPER
 export const saveChanges = async (req, res) => {
-  const { title, content, authorDetails, university } = req.body;
+  const {
+    title,
+    authors,
+    university,
+    abstract,
+    introduction,
+    literature,
+    methodology,
+    results,
+    conclusion,
+    futurework,
+    citation,
+  } = req.body;
+
   const userId = req.params.id;
   const paperId = req.params.paperId;
 
@@ -51,18 +64,20 @@ export const saveChanges = async (req, res) => {
     if (!paper) {
       return res.status(404).json({ message: "Paper not found" });
     }
-
-    if (paper.title !== title) {
-      paper.title = title;
-    }
-
-    if (JSON.stringify(paper.authorDetails) !== JSON.stringify(authorDetails)) {
-      paper.authorDetails = authorDetails;
-    }
-
-    if (paper.university !== university) {
-      paper.university = university;
-    }
+    const authorsChanged = JSON.stringify(paper.authors) !== JSON.stringify(authors);
+    if (authorsChanged) paper.authors = authors;
+    
+    if (paper.title !== title) paper.title = title;
+    //if (JSON.stringify(paper.authors) !== JSON.stringify(authors)) paper.authors = authors;
+    if (paper.university !== university) paper.university = university;
+    if (paper.abstract !== abstract) paper.abstract = abstract;
+    if (paper.introduction !== introduction) paper.introduction = introduction;
+    if (paper.literature !== literature) paper.literature = literature;
+    if (paper.methodology !== methodology) paper.methodology = methodology;
+    if (paper.results !== results) paper.results = results;
+    if (paper.conclusion !== conclusion) paper.conclusion = conclusion;
+    if (paper.futurework !== futurework) paper.futurework = futurework;
+    if (paper.citation !== citation) paper.citation = citation;
 
     paper.lastEdited = Date.now();
     await paper.save();

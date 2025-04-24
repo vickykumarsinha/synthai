@@ -44,8 +44,7 @@ export const gptSearch = async (req, res) => {
       const reply = data.choices[0]?.message?.content || "No response from AI";
   
       res.json({ response: reply });
-  
-      //res.json({ response });
+
   
     } catch (error) {
       console.error("Error in Gemini API:", error);

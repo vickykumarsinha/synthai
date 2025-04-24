@@ -86,14 +86,14 @@ function EditPaper() {
         title: content.Title,
         authors: authorDetails,
         university,
-        abstract: content.Abstract,
-        introduction: content.Introduction,
-        literature: content.Literature,
-        methodology: content.Methodology,
-        results: content.Results,
-        conclusion: content.Conclusion,
-        futurework: content.Futurework,
-        citation: content.Citation,
+        abstract: content.Abstract || "",
+        introduction: content.Introduction || "",
+        literature: content.Literature || "",
+        methodology: content.Methodology || "",
+        results: content.Results || "",
+        conclusion: content.Conclusion || "",
+        futurework: content.Futurework || "",
+        citation: content.Citations || "",
       };
 
       const response = await fetch(`http://localhost:5000/api/users/${id}/savechanges/${paperId}`, {
@@ -112,7 +112,8 @@ function EditPaper() {
       console.error("Error saving paper:", error);
     }
   };
-
+  
+  // Communicate with AI
   const handleSend = async () => {
     if (!message.trim()) return;
 
@@ -259,9 +260,8 @@ function EditPaper() {
               {messages.map((msg, index) => (
                 <div
                   key={index}
-                  className={`p-2 my-1 rounded-md ${
-                    msg.sender === "user" ? "bg-blue-200 text-right" : "bg-gray-300 text-left"
-                  }`}
+                  className={`p-2 my-1 rounded-md ${msg.sender === "user" ? "bg-blue-200 text-right" : "bg-gray-300 text-left"
+                    }`}
                 >
                   {msg.text}
                 </div>
