@@ -1,7 +1,9 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const [papers, setPapers] = useState([]);
@@ -24,7 +26,14 @@ function Dashboard() {
           headers: { Authorization: `Bearer ${token}` },
         });
         const paperData = await paperRes.json();
-        setPapers(paperData);
+        // setPapers(paperData?.papers);
+        console.log("Papers:", paperData);
+
+        if (Array.isArray(paperData)) {
+          setPapers(paperData);
+        } else {
+          setPapers([]); 
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -63,7 +72,7 @@ function Dashboard() {
     const blob = new Blob([content], { type: "text/plain" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `${paper.title}.txt`;
+    link.download = `${paper.title}.pdf`;
     link.click();
   };
 
@@ -72,18 +81,41 @@ function Dashboard() {
     paper?.title?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Function to create a new paper
+  const handleCreate = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/users/${id}/create-new`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      
+      const data = await response.json();
+      console.log("New paper created:", data);
+
+      if (response.ok) {
+        navigate(`new-paper/${data._id}`);
+      } else {
+        console.error("Error creating paper:", data.message);
+      }
+    } catch (err) {
+      console.error("Server error:", err);
+    }
+  };
+
   return (
     <div className="max-w-6xl mt-20 mx-auto p-6 bg-white shadow-lg rounded-lg relative w-full">
       <h2 className="text-2xl font-bold text-center mb-6">
         Welcome, {user?.name || "Loading..."}!
       </h2>
 
-      <Link
-        to='new-paper'
-        className="fixed bottom-20 right-10 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition"
+      <button
+        onClick={handleCreate}
+        className="fixed bottom-20 right-10 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition" 
       >
         ➕ New Paper
-      </Link>
+      </button>
 
       <input
         type="text"

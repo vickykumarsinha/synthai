@@ -1,14 +1,14 @@
 const router = express.Router();
 import express from 'express';
 import getUserById from '../controllers/userController.js';
-import {addResearchPaper, getUserPapers, getPaper, saveChanges, deletePaper} from '../controllers/researchPaperController.js';
+import {createEmptyPaper, getUserPapers, getPaper, saveChanges, deletePaper} from '../controllers/researchPaperController.js';
 
 
 router.get('/:id', getUserById);
 
 router.get('/:id/getpapers', getUserPapers);
 
-router.post('/:id/savepapers', addResearchPaper);
+router.post('/:id/create-new', createEmptyPaper);
 
 router.delete('/:id/delete/:paperId', deletePaper);
 

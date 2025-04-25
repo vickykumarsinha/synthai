@@ -37,7 +37,7 @@ function Login() {
 
   return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-r from-blue-600 to-indigo-800">
-      <div className="bg-white p-10 py-20 rounded-lg shadow-lg w-120">
+      <div className="bg-white p-10 py-20 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-3xl font-bold mb-4 text-center text-gray-800">Login</h2>
         {error && <p className="text-red-500 text-center">{error}</p>}
         

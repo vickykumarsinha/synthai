@@ -21,11 +21,14 @@ function Register() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
       });
+      
+      if (!response.ok) {
+        const errorText = await response.text(); // Get the response text in case of error
+        console.error("Error response:", errorText);
+        throw new Error("Server responded with an error.");
+      }
 
       const data = await response.json();
-      console.log("Response from server:", data); // Debugging
-
-      if (!response.ok) throw new Error(data.message);
 
       setMessage("Registration successful! Redirecting to login...");
       setTimeout(() => navigate("/auth/login"), 2000);
@@ -37,7 +40,7 @@ function Register() {
 
   return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-r from-blue-600 to-indigo-800">
-      <div className="bg-white p-10 py-20 rounded-lg shadow-lg w-120">
+      <div className="bg-white p-10 py-20 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-3xl font-bold mb-4 text-center text-gray-800">Register</h2>
         {error && <p className="text-red-500 text-center">{error}</p>}
         {message && <p className="text-green-500 text-center">{message}</p>}

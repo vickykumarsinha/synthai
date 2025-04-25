@@ -32,7 +32,7 @@ function App() {
             </Route>
             <Route element={<ProtectedRoute />}>
               <Route path="/user/:id" element={<Dashboard />} />
-              <Route path="/user/:id/new-paper" element={<CreateNewPaper />} />
+              <Route path="/user/:id/new-paper/:paperId" element={<CreateNewPaper />} />
               <Route path="/user/:id/profile" element={<Profile />} />
               <Route path="/user/:id/edit/:paperId" element={<EditPaper />} />
             </Route>

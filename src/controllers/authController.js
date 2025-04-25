@@ -2,6 +2,12 @@ import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+      expiresIn: '1m', 
+    });
+  };
+
 const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
     
@@ -18,12 +24,13 @@ const registerUser = async (req, res) => {
     const user = await User.create({ name, email, password: hashedPassword, papers: [], });
     
     if (user) {
+        const token = generateToken(user.id);
         res.status(201).json({
             _id: user.id,
             name: user.name,
             email: user.email,
             papers: [],
-            token: generateToken(user.id)
+            token,
         });
     } else {
         res.status(400).json({ message: 'Invalid user data' });

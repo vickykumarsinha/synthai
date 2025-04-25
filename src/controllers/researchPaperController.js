@@ -2,31 +2,34 @@ import ResearchPaper from "../models/ResearchPaper.js";
 import User from "../models/User.js";
 
 // CREATE NEW PAPER
-export const addResearchPaper = async (req, res) => {
-  const { title, content, authorDetails, university, userId } = req.body;
-  if (!title) {
-    return res.status(400).json({ message: "Title is required" });
-  }
+export const createEmptyPaper = async (req, res) => {
+  const userId = req.params.id;
 
   try {
-    let paper = await ResearchPaper.findOne({ userId });
+    const paper = new ResearchPaper({
+      title: "Enter your title here",
+      authors: [],
+      university: "",
+      abstract: "",
+      introduction: "",
+      literature: "",
+      methodology: "",
+      results: "",
+      conclusion: "",
+      futurework: "",
+      citation: "",
+      status: "Draft",
+      lastEdited: Date.now(),
+    });
 
-    if (paper) {
-      // Update existing paper
-      paper.title = title;
-      paper.content = content;
-      paper.authorDetails = authorDetails;
-      paper.university = university;
-      await paper.save();
-      return res.status(200).json({ message: "Paper updated successfully!", _id: paper._id });
-    } else {
-      // Create new paper
-      paper = new ResearchPaper({ userId, title, content, authorDetails, university });
-      await paper.save();
-      return res.status(201).json({ message: "Paper saved successfully!", _id: paper._id });
-    }
-  } catch (error) {
-    console.error("Error saving research paper:", error);
+    await paper.save();
+
+    await User.findByIdAndUpdate(userId, { $push: { papers: paper._id } });
+
+    res.status(201).json({ message: "Empty paper created", _id: paper._id });
+  }
+  catch (error) {
+    console.error("Error creating research paper:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -89,7 +92,6 @@ export const saveChanges = async (req, res) => {
   }
 };
 
-
 // ALL PAPERS OF USER
 export const getUserPapers = async (req, res) => {
   try {
@@ -100,11 +102,13 @@ export const getUserPapers = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    console.log("User papers:", user.papers);
+
     if (!user.papers || user.papers.length === 0) {
-      return res.status(404).json({ message: "No research papers found." });
+      return res.status(200).json({ message: "No research papers found.", papers: [] });
     }
 
-    res.status(200).json(user.papers);
+    res.status(200).json( user.papers);
 
   } catch (error) {
     res.status(500).json({ message: "Server error" });

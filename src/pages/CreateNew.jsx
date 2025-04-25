@@ -10,7 +10,7 @@ const sections = [
 ];
 
 function CreateNewPaper() {
-  const { id } = useParams();
+  const { id, paperId } = useParams();
   const [selectedSection, setSelectedSection] = useState(sections[0]);
   const [content, setContent] = useState({});
   const [showChat, setShowChat] = useState(false);
@@ -18,18 +18,26 @@ function CreateNewPaper() {
   const [message, setMessage] = useState("");
   const [authorDetails, setAuthorDetails] = useState([{ name: "", email: "" }]);
   const [university, setUniversity] = useState("");
-  const [paperId, setPaperId] = useState(null);
 
   useEffect(() => {
     const fetchPaper = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/users/${id}/getpaper`);
+        const response = await fetch(`http://localhost:5000/api/users/${id}/getpapers/${paperId}`);
         if (response.ok) {
           const data = await response.json();
-          setContent(data.content || {});
-          setAuthorDetails(data.authorDetails || [{ name: "", email: "" }]);
+          setContent({
+            Title: data.title || "",
+            Abstract: data.abstract || "",
+            Introduction: data.introduction || "",
+            Literature: data.literature || "",
+            Methodology: data.methodology || "",
+            Results: data.results || "",
+            Conclusion: data.conclusion || "",
+            Futurework: data.futurework || "",
+            Citation: data.citation || "",
+          });
+          setAuthorDetails(data.authors || [{ name: "", email: "" }]);
           setUniversity(data.university || "");
-          setPaperId(data._id);
         }
       } catch (error) {
         console.error("Error loading paper:", error);
@@ -62,21 +70,28 @@ function CreateNewPaper() {
     try {
       const requestData = {
         userId: id,
+        paperId,
         title: content.Title,
-        content,
-        authorDetails,
+        authors: authorDetails,
         university,
+        abstract: content.Abstract || "",
+        introduction: content.Introduction || "",
+        literature: content.Literature || "",
+        methodology: content.Methodology || "",
+        results: content.Results || "",
+        conclusion: content.Conclusion || "",
+        futurework: content.Futurework || "",
+        citation: content.Citations || "",
       };
 
-      const response = await fetch(`http://localhost:5000/api/users/${id}/savepapers`, {
-        method: paperId ? "PUT" : "POST",
+      const response = await fetch(`http://localhost:5000/api/users/${id}/savechanges/${paperId}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestData),
       });
 
       const data = await response.json();
       if (response.ok) {
-        setPaperId(data._id);
         alert("Paper saved successfully!");
       } else {
         console.error("Error saving research paper:", data);
