@@ -96,12 +96,13 @@ function EditPaper() {
         citation: content.Citations || "",
       };
 
+      console.log("Request Data:", requestData.authors); // Debugging line
       const response = await fetch(`http://localhost:5000/api/users/${id}/savechanges/${paperId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestData),
       });
-
+      
       if (response.ok) {
         alert("Paper updated successfully!");
       } else {

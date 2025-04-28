@@ -1,14 +1,16 @@
 import ResearchPaper from "../models/ResearchPaper.js";
 import User from "../models/User.js";
 
+
 // CREATE NEW PAPER
 export const createEmptyPaper = async (req, res) => {
   const userId = req.params.id;
+  const { authors } = req.body;
 
   try {
     const paper = new ResearchPaper({
       title: "Enter your title here",
-      authors: [],
+      authors: authors || [],
       university: "",
       abstract: "",
       introduction: "",
@@ -52,10 +54,10 @@ export const saveChanges = async (req, res) => {
 
   const userId = req.params.id;
   const paperId = req.params.paperId;
-
+  
   try {
     const user = await User.findById(userId);
-
+    
     const hasPaper = user.papers.some(p => p.toString() === paperId);
     if (!hasPaper) {
       user.papers.push(paperId);
@@ -68,10 +70,22 @@ export const saveChanges = async (req, res) => {
       return res.status(404).json({ message: "Paper not found" });
     }
     const authorsChanged = JSON.stringify(paper.authors) !== JSON.stringify(authors);
-    if (authorsChanged) paper.authors = authors;
+    if (authorsChanged){
+      paper.authors = authors;
+
+      if(authors && authors.length > 0) {
+        await Promise.all(authors.map(async (author) => {
+          const authorUser = await User.findOne({ email: author.email });
+          if (authorUser) {
+              if (!authorUser.papers.includes(paper._id)) {
+                authorUser.papers.push(paper._id);
+                await authorUser.save();
+              }
+          }
+        }));
+    }} 
     
     if (paper.title !== title) paper.title = title;
-    //if (JSON.stringify(paper.authors) !== JSON.stringify(authors)) paper.authors = authors;
     if (paper.university !== university) paper.university = university;
     if (paper.abstract !== abstract) paper.abstract = abstract;
     if (paper.introduction !== introduction) paper.introduction = introduction;

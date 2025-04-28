@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import IEEELatex from "./../paper-template/IEEETemplate";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -26,8 +27,6 @@ function Dashboard() {
           headers: { Authorization: `Bearer ${token}` },
         });
         const paperData = await paperRes.json();
-        // setPapers(paperData?.papers);
-        console.log("Papers:", paperData);
 
         if (Array.isArray(paperData)) {
           setPapers(paperData);
@@ -68,11 +67,22 @@ function Dashboard() {
 
   // Function to download paper as text file
   const handleDownload = (paper) => {
-    const content = `Title: ${paper.title}\n\nAbstract: ${paper.abstract}\n\nMethodology: ${paper.methodology}`;
-    const blob = new Blob([content], { type: "text/plain" });
+    const latexContent = IEEELatex({
+      Title: paper.title,
+      Abstract: paper.abstract,
+      Introduction: paper.introduction,
+      "Literature Review": paper.literature,
+      Methodology: paper.methodology,
+      "Results & Discussion": paper.results,
+      Conclusion: paper.conclusion,
+      "Future Work": paper.futurework,
+      Citations: paper.citation,
+    });
+  
+    const blob = new Blob([latexContent], { type: "application/x-latex" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `${paper.title}.pdf`;
+    link.download = `${paper.title || "research-paper"}.tex`;
     link.click();
   };
 
@@ -89,10 +99,17 @@ function Dashboard() {
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({     
+          authors: [
+            {
+              name: user.name || "Anonymous",
+              email: user.email || "unknown@example.com",
+            }
+          ]
+        }),
       });
       
       const data = await response.json();
-      console.log("New paper created:", data);
 
       if (response.ok) {
         navigate(`new-paper/${data._id}`);
@@ -112,9 +129,10 @@ function Dashboard() {
 
       <button
         onClick={handleCreate}
-        className="fixed bottom-20 right-10 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition" 
+        className="fixed bottom-20 right-10 bg-blue-500 text-white p-5 px-8 rounded-full shadow-lg hover:bg-blue-600 transition items-center flex" 
       >
-        ➕ New Paper
+        
+        <span className="text-white text-xl font-semibold">New Paper</span>
       </button>
 
       <input
