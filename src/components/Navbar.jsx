@@ -26,7 +26,7 @@ function Navbar() {
         <Link to="/" className="text-2xl font-bold">SynthAI</Link>
       )}
 
-      <div className="flex gap-8">
+      <div className="flex gap-10 text-xl font-bold">
         {["home", "features", "help", "contact"].map((id) => (
           <a key={id} href={`#${id}`} className="hover:underline">
             {id.charAt(0).toUpperCase() + id.slice(1)}

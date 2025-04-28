@@ -22,6 +22,21 @@ const UserSchema = new mongoose.Schema(
         default: [],
       },
     ],
+    university: {
+      type: String,
+      required: true,
+    },
+    location: {
+      type: String,
+      required: true,
+    },
+    coauthors: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: [],
+      },
+    ],
   },
   { timestamps: true }
 );
