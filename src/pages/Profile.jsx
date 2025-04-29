@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 
@@ -6,6 +6,7 @@ function Profile() {
   const { id } = useParams(); 
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [coAuth, setCoAuth] = useState(null);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
@@ -22,12 +23,21 @@ function Profile() {
         const userData = await userRes.json();
         setUser(userData);
 
-        if (!response.ok) {
+        if (!userRes.ok) {
           throw new Error("Failed to fetch user data");
         }
 
-        const data = await response.json();
-        setUser(data);
+        if(userData.coauthors && userData.coauthors.length > 0) {
+          //const coAuthIDs = userData.coauthors;
+          
+          const coauthorRes = await fetch(`http://localhost:5000/api/users/${id}/getcoauthors`, {
+            headers: { Authorization: `Bearer ${token}`},
+          });
+          
+          const coauthorData = await coauthorRes.json();
+          setCoAuth(coauthorData);
+        }
+
       } catch (error) {
         console.error("Error fetching user:", error);
       } finally {
@@ -74,17 +84,19 @@ function Profile() {
       <div className="bg-white shadow-lg rounded-2xl p-8 w-full">
         <h3 className="text-2xl font-bold text-gray-800 mb-6">Co-Authors</h3>
 
-        {user?.coAuthors && user.coAuthors.length > 0 ? (
+        {coAuth && coAuth.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {user.coAuthors.map((author, index) => (
+            {coAuth.map((author, index) => (
               <div 
                 key={index} 
                 className="flex items-center p-4 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition"
               >
-                <FaUserCircle className="text-gray-300 text-5xl" />
+                <FaUserCircle className="text-gray-300 text-7xl" />
                 <div className="ml-4">
-                  <div className="font-semibold text-gray-800">{author.name}</div>
-                  <div className="text-sm text-gray-500">{author.email}</div>
+                  <div className="font-bold text-xl text-gray-800">{author.name}</div>
+                  <div className="text-l text-gray-500">{author.university}</div>
+                  <div className="text-l text-gray-500">{author.location}</div>
+                  <div className="text-l text-gray-500">{author.totalpapers}</div>
                 </div>
               </div>
             ))}
