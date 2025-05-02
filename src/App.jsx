@@ -10,6 +10,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import CreateNewPaper from "./pages/CreateNew";
 import Profile from "./pages/Profile";
 import EditPaper from "./pages/EditPaper";
+import PaperSearch from "./components/PaperSearch";
+
 function App() {
   const [user, setUser] = useState(null);
 
@@ -36,6 +38,7 @@ function App() {
               <Route path="/user/:id/profile" element={<Profile />} />
               <Route path="/user/:id/edit/:paperId" element={<EditPaper />} />
             </Route>
+            <Route path="/search" element={<PaperSearch />} />
             
           </Routes>
         </div>
