@@ -23,7 +23,7 @@ function CreateNewPaper() {
     const fetchPaper = async () => {
       try {
         const response = await fetch(`http://localhost:5000/api/users/${id}/getpapers/${paperId}`);
-        
+
         if (response.ok) {
           const data = await response.json();
           setContent({
@@ -85,7 +85,7 @@ function CreateNewPaper() {
         citation: content.Citations || "",
       };
 
-      
+
       const response = await fetch(`http://localhost:5000/api/users/${id}/savechanges/${paperId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -137,17 +137,16 @@ function CreateNewPaper() {
         {sections.map((section) => (
           <button
             key={section}
-            className={`w-full p-2 mb-2 rounded text-left ${
-              selectedSection === section ? "bg-blue-500" : "hover:bg-gray-700"
-            }`}
+            className={`w-full p-2 mb-2 rounded text-left ${selectedSection === section ? "bg-blue-500" : "hover:bg-gray-700"
+              }`}
             onClick={() => setSelectedSection(section)}
           >
             {section}
           </button>
-        ))} 
+        ))}
       </div>
-      
-      
+
+
       <div className="flex-1 p-6 bg-gray-200 relative">
 
         {/* AI Chat Button */}
@@ -186,6 +185,12 @@ function CreateNewPaper() {
                   value={author.email}
                   onChange={(e) => handleAuthorChange(index, "email", e.target.value)}
                 />
+                <button
+                  onClick={() => handleRemoveAuthor(index, author.email)}
+                  className="text-red-600 hover:text-red-800 font-bold ml-2"
+                >
+                  ❌
+                </button>
               </div>
             ))}
             <button
@@ -223,7 +228,7 @@ function CreateNewPaper() {
           </div>
         </div>
 
-        
+
 
         {/* AI Chat Panel */}
         {showChat && (
@@ -239,9 +244,8 @@ function CreateNewPaper() {
               {messages.map((msg, index) => (
                 <div
                   key={index}
-                  className={`p-2 my-1 rounded-md ${
-                    msg.sender === "user" ? "bg-blue-200 text-right" : "bg-gray-300 text-left"
-                  }`}
+                  className={`p-2 my-1 rounded-md ${msg.sender === "user" ? "bg-blue-200 text-right" : "bg-gray-300 text-left"
+                    }`}
                 >
                   {msg.text}
                 </div>

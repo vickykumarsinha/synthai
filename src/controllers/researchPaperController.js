@@ -56,12 +56,12 @@ export const saveChanges = async (req, res) => {
   const paperId = req.params.paperId;
   
   try {
-    const user = await User.findById(userId);
+    const mainUser = await User.findById(userId);
     
-    const hasPaper = user.papers.some(p => p.toString() === paperId);
+    const hasPaper = mainUser.papers.some(p => p.toString() === paperId);
     if (!hasPaper) {
-      user.papers.push(paperId);
-      await user.save();
+      mainUser.papers.push(paperId);
+      await mainUser.save();
       return res.status(403).json({ message: "Paper does not belong to this user" });
     }
 
@@ -83,6 +83,20 @@ export const saveChanges = async (req, res) => {
               }
           }
         }));
+        const otherCoAuthorIDs = [];
+        for (const author of authors) {
+          
+          const authorUser = await User.findOne({ email: author.email });
+          if (authorUser && authorUser._id.toString() !== userId) {
+            otherCoAuthorIDs.push(authorUser._id);
+          }
+        }
+        const existingIds = new Set(mainUser.coauthors.map(id => id.toString()));
+        const newIds = otherCoAuthorIDs.filter(id => !existingIds.has(id.toString()));
+        if (newIds.length > 0) {
+          mainUser.coauthors.push(...newIds);
+          await mainUser.save();
+        }
     }} 
     
     if (paper.title !== title) paper.title = title;
@@ -183,3 +197,34 @@ export const deletePaper = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+// Remove Authors from Paper  
+export const removeAuthor = async (req, res) => {
+  const {removedEmail} = req.body;
+  const userId = req.params.id;
+  const paperId = req.params.paperId;
+  console.log("Removing author:", removedEmail);
+  try{
+    const mainPaper = await ResearchPaper.findById(paperId);
+    if (!mainPaper) {
+      return res.status(404).json({ message: "Paper not found" });
+    }
+    // Delete author from paper
+    mainPaper.authors = mainPaper.authors.filter(a => a.email !== removedEmail);
+    await mainPaper.save();
+    
+    // Remove paperId from the removed author's papers list
+    const removedAuthor = await User.findOne({ email: removedEmail });
+    if (removedAuthor) {
+      removedAuthor.papers = removedAuthor.papers.filter(p => p.toString() !== paperId);
+      await removedAuthor.save();
+    }
+    const mainUser = await User.findById(userId);
+    mainUser.coauthors = mainUser.coauthors.filter(coauthor => coauthor.toString() !== removedAuthor._id.toString());
+    await mainUser.save();
+    res.status(200).json({ message: "Author removed" });
+  }catch (error) {
+    console.error("Error removing author:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+}

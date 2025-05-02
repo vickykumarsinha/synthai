@@ -73,6 +73,26 @@ function EditPaper() {
     setAuthorDetails([...authorDetails, { name: "", email: "" }]);
   };
 
+  const handleRemoveAuthor = (index, email) => {
+    const updatedAuthors = [...authorDetails];
+    updatedAuthors.splice(index, 1);
+    setAuthorDetails(updatedAuthors);
+
+    // Remove author from the database
+    try {
+      const res = fetch(`http://localhost:5000/api/users/${id}/remove-author/${paperId}`, {
+        method: "PUT",
+        headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+        body: JSON.stringify({ removedEmail: email }),
+      })
+    }catch (error) {
+      console.error("Error removing author:", error);
+    }
+  }
+
   const handleSave = async () => {
     if (!content.Title || content.Title.trim() === "") {
       alert("Title is required");
@@ -149,7 +169,7 @@ function EditPaper() {
         {sections.map((section) => (
           <button
             key={section}
-            className={`w-full p-2 mb-2 rounded text-left ${selectedSection === section ? "bg-blue-500" : "hover:bg-gray-700"
+            className={`w-full p-3 mb-2 rounded-xl text-left ${selectedSection === section ? "bg-blue-500" : "hover:bg-gray-700"
               }`}
             onClick={() => setSelectedSection(section)}
           >
@@ -173,7 +193,7 @@ function EditPaper() {
             <h2 className="text-xl font-semibold mb-4">Title</h2>
             <input
               type="text"
-              className="w-full p-2 border rounded mb-4"
+              className="w-full p-2 border rounded-xl mb-4"
               placeholder="Enter paper title"
               value={content.Title || ""}
               onChange={(e) =>
@@ -186,7 +206,7 @@ function EditPaper() {
               <div key={index} className="mb-2 flex gap-2">
                 <input
                   type="text"
-                  className="p-2 border rounded w-1/2"
+                  className="p-2 border rounded-xl w-1/2"
                   placeholder="Author Name"
                   value={author.name}
                   onChange={(e) =>
@@ -195,13 +215,19 @@ function EditPaper() {
                 />
                 <input
                   type="email"
-                  className="p-2 border rounded w-1/2"
+                  className="p-2 border rounded-xl w-1/2"
                   placeholder="Author Email"
                   value={author.email}
                   onChange={(e) =>
                     handleAuthorChange(index, "email", e.target.value)
                   }
                 />
+                <button
+                  onClick={() => handleRemoveAuthor(index, author.email)}
+                  className="text-white hover:bg-red-800 font-bold text-2xl ml-2 bg-red-600 px-4 rounded-xl"
+                >
+                  X
+                </button>
               </div>
             ))}
             <button
@@ -221,6 +247,7 @@ function EditPaper() {
               value={university}
               onChange={(e) => setUniversity(e.target.value)}
             />
+            
           </div>
         ) : (
           <div>
