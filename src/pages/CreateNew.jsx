@@ -131,13 +131,16 @@ function CreateNewPaper() {
   };
 
   return (
-    <div className="flex mt-16 h-screen">
-      <div className="w-1/5 bg-gray-800 text-white p-4">
-        <h2 className="text-lg font-bold mb-4">Sections</h2>
+    <div className="flex pt-16 h-screen bg-gray-100">
+      {/* Sidebar */}
+      <div className="w-1/5 bg-blue-100 p-6 border-r-2 border-none">
+        <h2 className="text-xl font-bold mb-6">Sections</h2>
         {sections.map((section) => (
           <button
             key={section}
-            className={`w-full p-2 mb-2 rounded text-left ${selectedSection === section ? "bg-blue-500" : "hover:bg-gray-700"
+            className={`w-full py-3 px-4 mb-3 rounded-xl text-left font-medium transition-all duration-200 ${selectedSection === section
+                ? "bg-blue-600 text-white shadow-md"
+                : "hover:bg-blue-200"
               }`}
             onClick={() => setSelectedSection(section)}
           >
@@ -146,105 +149,118 @@ function CreateNewPaper() {
         ))}
       </div>
 
-
-      <div className="flex-1 p-6 bg-gray-200 relative">
-
+      {/* Main Content */}
+      <div className="flex-1 p-8 overflow-y-auto relative bg-gray-100">
         {/* AI Chat Button */}
         <button
-          className="fixed bottom-10 right-10 bg-blue-600 text-white p-3 rounded-full shadow-lg"
+          className="fixed bottom-10 right-10 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-xl"
           onClick={() => setShowChat(true)}
         >
-          <FaRobot size={55} />
+          <FaRobot size={28} />
         </button>
 
         {selectedSection === "Title" ? (
-          <div onClick={() => setShowChat(false)}>
-            <h2 className="text-xl font-semibold mb-4">Title</h2>
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-800">Paper Title</h2>
             <input
               type="text"
-              className="w-full p-2 border rounded mb-4"
+              className="w-full p-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter paper title"
               value={content.Title || ""}
               onChange={(e) => setContent({ ...content, Title: e.target.value })}
             />
 
-            <h2 className="text-xl font-semibold mb-4">Authors</h2>
+            <h2 className="text-2xl font-bold text-gray-800">Authors</h2>
             {authorDetails.map((author, index) => (
-              <div key={index} className="mb-2">
+              <div key={index} className="flex gap-4 items-center mb-3">
                 <input
                   type="text"
-                  className="p-2 border rounded mr-2"
+                  className="p-3 border-2 border-gray-300 rounded-xl w-1/2"
                   placeholder="Author Name"
                   value={author.name}
-                  onChange={(e) => handleAuthorChange(index, "name", e.target.value)}
+                  onChange={(e) =>
+                    handleAuthorChange(index, "name", e.target.value)
+                  }
                 />
                 <input
                   type="email"
-                  className="p-2 border rounded"
+                  className="p-3 border-2 border-gray-300 rounded-xl w-1/2"
                   placeholder="Author Email"
                   value={author.email}
-                  onChange={(e) => handleAuthorChange(index, "email", e.target.value)}
+                  onChange={(e) =>
+                    handleAuthorChange(index, "email", e.target.value)
+                  }
                 />
                 <button
                   onClick={() => handleRemoveAuthor(index, author.email)}
-                  className="text-red-600 hover:text-red-800 font-bold ml-2"
+                  className="bg-white hover:bg-red-200 border-2 border-red-600 text-red-600 font-bold px-4 py-2 rounded-xl"
                 >
-                  ❌
+                  ✕
                 </button>
               </div>
             ))}
             <button
-              className="bg-gray-500 text-white px-4 py-2 rounded mt-2"
+              className="bg-white hover:bg-blue-100 border-2 border-blue-600 text-blue-600 px-5 py-2 rounded-xl"
               onClick={addAuthor}
             >
-              Add Author
+              + Add Author
             </button>
 
-            <h2 className="text-xl font-semibold mt-4 mb-2">University (Optional)</h2>
+            <h2 className="text-2xl font-bold text-gray-800">University (Optional)</h2>
             <input
               type="text"
-              className="w-full p-2 border rounded"
+              className="w-full p-3 border-2 border-gray-300 rounded-xl"
               placeholder="University Name"
               value={university}
               onChange={(e) => setUniversity(e.target.value)}
             />
           </div>
         ) : (
-          <div >
-            <h2 className="text-xl font-semibold mb-4">{selectedSection}</h2>
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold text-gray-800">{selectedSection}</h2>
             <ReactQuill
               theme="snow"
               value={content[selectedSection] || ""}
               onChange={handleContentChange}
-              className="bg-white p-2 rounded-xl"
+              className="bg-white border-2 border-gray-300 rounded-xl min-h-[250px]"
             />
           </div>
         )}
 
-        <div className="mt-4 flex justify-between">
-          <Link to="/user/" className="text-blue-500">← Back to Dashboard</Link>
-          <div>
-            <button onClick={handleSave} className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Save Paper</button>
-          </div>
+        {/* Save & Back Buttons */}
+        <div className="mt-8 flex justify-between items-center">
+          <Link
+            to={`/user/${id}`}
+            className="text-blue-600 text-xl hover:underline font-medium"
+          >
+            ← Back to Dashboard
+          </Link>
+          <button
+            onClick={handleSave}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl flex items-center gap-2"
+          >
+            <FaPaperPlane />
+            Save Paper
+          </button>
         </div>
-
-
 
         {/* AI Chat Panel */}
         {showChat && (
-          <div className="fixed top-20 right-5 rounded-2xl w-96 h-[90vh] bg-white shadow-lg p-4 border-l flex flex-col">
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-lg font-bold">AI Assistant</h2>
-              <button onClick={() => setShowChat(false)} className="text-red-500">
+          <div className="fixed top-20 right-5 rounded-2xl w-96 h-[90vh] bg-white shadow-2xl border-2 border-gray-300 p-4 flex flex-col z-50">
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="text-lg font-bold text-gray-800">AI Assistant</h2>
+              <button onClick={() => setShowChat(false)} className="text-red-600">
                 <FaTimes size={20} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto border p-2 rounded bg-gray-100">
+            <div className="flex-1 overflow-y-auto bg-gray-100 rounded-xl p-3 space-y-2 border">
               {messages.map((msg, index) => (
                 <div
                   key={index}
-                  className={`p-2 my-1 rounded-md ${msg.sender === "user" ? "bg-blue-200 text-right" : "bg-gray-300 text-left"
+                  className={`p-2 rounded-md max-w-[80%] ${msg.sender === "user"
+                      ? "bg-blue-100 self-end text-right"
+                      : "bg-gray-300 self-start text-left"
                     }`}
                 >
                   {msg.text}
@@ -252,10 +268,10 @@ function CreateNewPaper() {
               ))}
             </div>
 
-            <div className="flex items-center mt-2 border rounded-lg p-2">
+            <div className="mt-3 flex items-center border rounded-xl overflow-hidden">
               <input
                 type="text"
-                className="flex-1 p-2 border-none outline-none"
+                className="flex-1 px-3 py-2 outline-none"
                 placeholder="Type a message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -263,15 +279,16 @@ function CreateNewPaper() {
               />
               <button
                 onClick={handleSend}
-                className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2"
               >
-                <FaPaperPlane size={18} />
+                <FaPaperPlane />
               </button>
             </div>
           </div>
         )}
       </div>
     </div>
+
   );
 }
 

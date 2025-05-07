@@ -25,7 +25,7 @@ function App() {
       <div className="min-h-screen flex flex-col bg-gray-50 ">
         <Navbar user={user} logout={logout} />
         
-        <div className="w-full flex flex-col flex-grow py-15">
+        <div className="w-full flex flex-col flex-grow py-15 bg-slate-100">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/auth">
@@ -43,7 +43,6 @@ function App() {
           </Routes>
         </div>
 
-        <Footer />
       </div>
     </Router>
   );

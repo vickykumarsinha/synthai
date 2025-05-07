@@ -67,33 +67,32 @@ function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-blue-500 px-4 py-3 text-white shadow-lg z-50">
-      <div className="flex flex-wrap justify-between items-center gap-y-4">
+    <nav className="fixed top-0 left-0 w-full bg-white shadow-sm p-4 text-gray-800 z-50 flex justify-between items-center">
+      <Link to={isLoggedIn ? `/user/${userId}` : `/`} className="text-2xl font-bold text-blue-700">
+        SynthAI
+      </Link>
 
-        {/* Logo */}
-        <div className="text-2xl font-bold">
-          <Link to={isLoggedIn ? `/user/${userId}` : `/`}>SynthAI</Link>
-        </div>
+      <div className="hidden md:flex space-x-8 text-2xl font-semibold ">
+        {["home", "features", "help"].map((id) => (
+          <a
+            key={id}
+            href={`#${id}`}
+            className="hover:text-blue-600 hover:scale-105 transition-all duration-300"
+          >
+            {id.charAt(0).toUpperCase() + id.slice(1)}
+          </a>
+        ))}
+      </div>
+      {/* Search Bar */}
 
-        {/* Navigation Links */}
-        <div className="hidden md:flex gap-8 text-xl font-bold">
-          {["home", "features", "help", "contact"].map((id) => (
-            <a key={id} href={`#${id}`} className="hover:underline">
-              {id.charAt(0).toUpperCase() + id.slice(1)}
-            </a>
-          ))}
-        </div>
 
-        {/* Search Bar */}
-        
-
-        {/* Profile/Login Buttons */}
-        <div className="flex items-center gap-4">
+      {/* Profile/Login Buttons */}
+      <div className="flex items-center gap-4">
         <div className="relative w-full md:w-96">
           <input
             type="text"
             placeholder="Search research papers..."
-            className="w-full pl-4 pr-10 py-2 rounded-full focus:outline-none bg-white text-black placeholder-gray-500"
+            className="w-full pl-4 pr-10 py-2 rounded-full border-2 border-blue-600 focus:outline-none hover:bg-blue-100 transition-all text-blue-600 placeholder-blue-600"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -104,9 +103,9 @@ function Navbar() {
           />
           <button
             onClick={handlePaperSearch}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-500"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2"
           >
-            <FaSearch className="text-gray-700" />
+            <FaSearch className="text-blue-600" />
           </button>
 
           {showDropdown && (
@@ -161,33 +160,26 @@ function Navbar() {
             </div>
           )}
         </div>
-        
-          {isLoggedIn ? (
-            <>
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 px-4 py-2 rounded hover:bg-red-700"
-              >
-                Logout
-              </button>
-              <button
-                onClick={() => navigate(`/user/${userId}/profile`)}
-                className="text-white text-3xl"
-              >
-                <FaUserCircle />
-              </button>
-            </>
-          ) : (
-            <Link
-              to="/auth/login"
-              className="bg-green-500 px-4 py-2 rounded hover:bg-green-700"
+        {isLoggedIn ? (
+          <>
+            <button
+              onClick={handleLogout}
+              className="border-2 border-red-600 text-red-600 px-6 py-2 rounded-full font-medium hover:bg-red-100 hover:scale-105 transition-all duration-300"
             >
-              Login
-            </Link>
-          )}
-        </div>
+              Logout
+            </button>
+            <button
+              onClick={() => navigate(`/user/${userId}/profile`)}
+              className="text-white text-3xl"
+            >
+              <FaUserCircle className="text-blue-700 text-4xl" />
+            </button>
+          </>
+        ) : (
+          <></>
+        )}
       </div>
-    </nav>
+    </nav >
   );
 }
 

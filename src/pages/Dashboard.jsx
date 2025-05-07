@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import IEEELatex from "./../paper-template/IEEETemplate";
+import { Plus } from "lucide-react";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ function Dashboard() {
         if (Array.isArray(paperData)) {
           setPapers(paperData);
         } else {
-          setPapers([]); 
+          setPapers([]);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -78,7 +79,7 @@ function Dashboard() {
       "Future Work": paper.futurework,
       Citations: paper.citation,
     });
-  
+
     const blob = new Blob([latexContent], { type: "application/x-latex" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -99,7 +100,7 @@ function Dashboard() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({     
+        body: JSON.stringify({
           authors: [
             {
               name: user.name || "Anonymous",
@@ -108,7 +109,7 @@ function Dashboard() {
           ]
         }),
       });
-      
+
       const data = await response.json();
 
       if (response.ok) {
@@ -122,57 +123,54 @@ function Dashboard() {
   };
 
   return (
-    <div className="max-w-6xl mt-20 mx-auto p-6 bg-white shadow-lg rounded-lg relative w-full">
-      <h2 className="text-2xl font-bold text-center mb-6">
-        Welcome, {user?.name || "Loading..."}!
-      </h2>
+    <div className="max-w-full mx-28 mt-24 px-6 py-12 bg-white rounded-2xl shadow-xl relative">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+        <h2 className="text-3xl font-bold text-gray-800">
+          Welcome, {user?.name || "Loading..."} 👋
+        </h2>
 
-      <button
-        onClick={handleCreate}
-        className="fixed bottom-20 right-10 bg-blue-500 text-white p-5 px-8 rounded-full shadow-lg hover:bg-blue-600 transition items-center flex" 
-      >
-        
-        <span className="text-white text-xl font-semibold">New Paper</span>
-      </button>
+        <input
+          type="text"
+          placeholder="Search your papers..."
+          className="w-full md:w-96 px-4 py-2 border-2 border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
 
-      <input
-        type="text"
-        placeholder="Search Papers..."
-        className="w-full p-2 border rounded mb-4"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
-
+      {/* Table or message */}
       {papers.length > 0 ? (
-        <div className="mt-6">
-          <h3 className="text-xl font-semibold mb-4">Your Research Papers</h3>
-          <div className="bg-gray-100 p-4 rounded-lg shadow">
-            <table className="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr className="border-b bg-gray-200">
-                  <th className="text-left p-2 border">Title</th>
-                  <th className="text-left p-2 border">Last Edited</th>
-                  <th className="text-left p-2 border">Status</th>
-                  <th className="text-left p-2 border">Actions</th>
+        <div className="space-y-6">
+          <h3 className="text-2xl font-semibold text-gray-700">Your Research Papers</h3>
+
+          <div className="overflow-x-auto rounded-md border border-gray-200">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-blue-50 text-gray-700 font-semibold text-xl">
+                <tr>
+                  <th className="px-4 py-3 text-left ">Title</th>
+                  <th className="px-4 py-3 text-left ">Last Edited</th>
+                  <th className="px-4 py-3 text-left ">Status</th>
+                  <th className="px-4 py-3 text-left ">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-200 bg-white text-lg font-medium">
                 {allPapers.map((paper) => (
-                  <tr key={paper._id} className="border-b">
-                    <td className="p-2 border">{paper.title}</td>
-                    <td className="p-2 border">{new Date(paper.lastEdited).toLocaleDateString()}</td>
-                    <td className="p-2 border">{paper.status}</td>
-                    <td className="p-2 border flex gap-4 items-center">
-                      <Link to={`/user/${id}/edit/${paper._id}`} className="text-blue-500 font-semibold">
+                  <tr key={paper._id}>
+                    <td className="px-4 py-3">{paper.title}</td>
+                    <td className="px-4 py-3">{new Date(paper.lastEdited).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 capitalize">{paper.status}</td>
+                    <td className="px-4 py-3 flex flex-wrap gap-4 text-lg">
+                      <Link to={`/user/${id}/edit/${paper._id}`} className="text-blue-600 ">
                         ✏ Edit
                       </Link>
-                      <button onClick={() => handleCopy(paper.title)} className="text-gray-500 font-semibold">
+                      <button onClick={() => handleCopy(paper.title)} className="text-gray-600 ">
                         📋 Copy
                       </button>
-                      <button onClick={() => handleDownload(paper)} className="text-green-500 font-semibold">
+                      <button onClick={() => handleDownload(paper)} className="text-green-600 ">
                         ⬇ Download
                       </button>
-                      <button onClick={() => handleDelete(paper._id)} className="text-red-500 font-semibold">
+                      <button onClick={() => handleDelete(paper._id)} className="text-red-500 :underline">
                         ❌ Delete
                       </button>
                     </td>
@@ -183,9 +181,23 @@ function Dashboard() {
           </div>
         </div>
       ) : (
-        <p className="text-gray-600 text-center mt-6">No research papers found. Click "New Paper" to create one.</p>
+        <div className="text-center py-10 text-gray-600">
+          <p>No research papers found.</p>
+          <p className="text-sm mt-2">Click the ➕ button below to get started.</p>
+        </div>
       )}
+
+      {/* Floating New Paper Button */}
+      <button
+        onClick={handleCreate}
+        className="fixed bottom-20 right-10 bg-blue-600 hover:bg-blue-700 text-white p-5 rounded-full shadow-xl transition-all flex items-center justify-center font-semibold"
+        aria-label="Create new paper"
+      >
+        <Plus className="w-6 h-6 text-white" />
+        <p className="pl-3 text-xl">Create New Paper</p>
+      </button>
     </div>
+
   );
 }
 
