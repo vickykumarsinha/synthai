@@ -5,6 +5,7 @@ import latex from "../paper-template/IEEETemplate";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
+
 const sections = [
   "Title", "Abstract", "Introduction", "Literature Review", "Methodology", "Results & Discussion", "Conclusion", "Future Work", "Citations"
 ];
@@ -18,11 +19,13 @@ function CreateNewPaper() {
   const [message, setMessage] = useState("");
   const [authorDetails, setAuthorDetails] = useState([{ name: "", email: "" }]);
   const [university, setUniversity] = useState("");
+  const API = import.meta.env.VITE_API_BASE_URL;
+
 
   useEffect(() => {
     const fetchPaper = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/users/${id}/getpapers/${paperId}`);
+        const response = await fetch(`${API}/api/users/${id}/getpapers/${paperId}`);
 
         if (response.ok) {
           const data = await response.json();
@@ -86,7 +89,7 @@ function CreateNewPaper() {
       };
 
 
-      const response = await fetch(`http://localhost:5000/api/users/${id}/savechanges/${paperId}`, {
+      const response = await fetch(`${API}/api/users/${id}/savechanges/${paperId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestData),
@@ -112,7 +115,7 @@ function CreateNewPaper() {
     setMessage("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/chat", {
+      const response = await fetch(`${API}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message }),

@@ -7,6 +7,8 @@ import authRoutes from "./src/routes/auth.js";
 import userRoutes from "./src/routes/userRoutes.js";
 import gptRoutes from "./src/routes/gptRoutes.js";
 
+
+
 const app = express();
 dotenv.config();
 app.use(bodyParser.json());

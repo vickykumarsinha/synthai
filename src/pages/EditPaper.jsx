@@ -20,6 +20,7 @@ const sections = [
 ];
 
 function EditPaper() {
+  const API = import.meta.env.VITE_API_BASE_URL;
   const { id, paperId } = useParams();
   const [selectedSection, setSelectedSection] = useState(sections[0]);
   const [content, setContent] = useState({});
@@ -33,7 +34,7 @@ function EditPaper() {
   useEffect(() => {
     const fetchPaper = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/users/${id}/getpapers/${paperId}`);
+        const response = await fetch(`${API}/api/users/${id}/getpapers/${paperId}`);
         if (response.ok) {
           const data = await response.json();
 
@@ -81,7 +82,7 @@ function EditPaper() {
 
     // Remove author from the database
     try {
-      const res = fetch(`http://localhost:5000/api/users/${id}/remove-author/${paperId}`, {
+      const res = fetch(`${API}/api/users/${id}/remove-author/${paperId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -118,7 +119,7 @@ function EditPaper() {
       };
 
       console.log("Request Data:", requestData.authors); // Debugging line
-      const response = await fetch(`http://localhost:5000/api/users/${id}/savechanges/${paperId}`, {
+      const response = await fetch(`${API}/api/users/${id}/savechanges/${paperId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestData),
@@ -144,7 +145,7 @@ function EditPaper() {
     setMessage("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/chat", {
+      const response = await fetch(`${API}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message }),

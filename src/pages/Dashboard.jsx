@@ -5,6 +5,7 @@ import IEEELatex from "./../paper-template/IEEETemplate";
 import { Plus } from "lucide-react";
 
 function Dashboard() {
+  const API = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
   const { id } = useParams();
   const [user, setUser] = useState(null);
@@ -17,14 +18,14 @@ function Dashboard() {
         const token = localStorage.getItem("token");
 
         // Fetch user details
-        const userRes = await fetch(`http://localhost:5000/api/users/${id}`, {
+        const userRes = await fetch(`${API}/api/users/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const userData = await userRes.json();
         setUser(userData);
 
         // Fetch research papers
-        const paperRes = await fetch(`http://localhost:5000/api/users/${id}/getpapers`, {
+        const paperRes = await fetch(`${API}/api/users/${id}/getpapers`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const paperData = await paperRes.json();
@@ -47,7 +48,7 @@ function Dashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch(`http://localhost:5000/api/users/${id}/delete/${paperId}`, {
+      const response = await fetch(`${API}/api/users/${id}/delete/${paperId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -95,7 +96,7 @@ function Dashboard() {
   // Function to create a new paper
   const handleCreate = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/users/${id}/create-new`, {
+      const response = await fetch(`${API}/api/users/${id}/create-new`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

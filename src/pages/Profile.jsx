@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 
 function Profile() {
+  const API = import.meta.env.VITE_API_BASE_URL;
   const { id } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -18,7 +19,7 @@ function Profile() {
           navigate("/auth/login");
           return;
         }
-        const userRes = await fetch(`http://localhost:5000/api/users/${id}`, {
+        const userRes = await fetch(`${API}/api/users/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const userData = await userRes.json();
@@ -28,7 +29,7 @@ function Profile() {
           throw new Error("Failed to fetch user data");
         }
 
-        const userPapersRes = await fetch(`http://localhost:5000/api/users/${id}/getpapers`, {
+        const userPapersRes = await fetch(`${API}/api/users/${id}/getpapers`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const userPapersData = await userPapersRes.json();
@@ -39,7 +40,7 @@ function Profile() {
         if (userData.coauthors && userData.coauthors.length > 0) {
           //const coAuthIDs = userData.coauthors;
 
-          const coauthorRes = await fetch(`http://localhost:5000/api/users/${id}/getcoauthors`, {
+          const coauthorRes = await fetch(`${API}/api/users/${id}/getcoauthors`, {
             headers: { Authorization: `Bearer ${token}` },
           });
 
